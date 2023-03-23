@@ -20,7 +20,6 @@ complexnumber::complexnumber(const long double x, const long double y, int opt)
 }
 void complexnumber::print(int opt)
 {
-    printf("testsf\n");
     switch (opt)
     {
     case 0:
