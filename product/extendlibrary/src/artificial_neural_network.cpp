@@ -2,7 +2,7 @@
 
 artificial_neural_network::artificial_neural_network(long long layer)
 {
-    printf("%lld\n", layer);
+    printf("construct_layer=%lld\n", layer);
     this->layer_depth = layer;
     resize_brain(layer);
 }
@@ -28,7 +28,7 @@ int artificial_neural_network::fscan_knowledge(const char *name)
     FILE *f;
     f = fopen((string_name + string_name_addition).c_str(), "rb");
     rt = fscanf(f, "%lld", &knowledge_set_size);
-    printf("%lld\n", knowledge_set_size);
+    printf("knowledge_set_size=%lld\n", knowledge_set_size);
     this->resize_knowledge(knowledge_set_size);
     for (int i = 1; i <= knowledge_set_size; i++)
     {
@@ -46,6 +46,7 @@ int artificial_neural_network::fscan_brain(const char *name)
     FILE *f;
     f = fopen((string_name + string_name_addition).c_str(), "rb");
     rt = fscanf(f, "%lld", &layer_depth);
+    printf("layer_depth=%lld\n", layer_depth);
     this->resize_brain(layer_depth);
     for (int i = 1; i <= layer_depth; i++)
     {
@@ -76,7 +77,7 @@ field_matrix<complexnumber> artificial_neural_network::forward_propagation(field
     // x.print();
     for (int i = 1; i <= layer_depth; i++)
     {
-        // printf("%d\n", i);
+        // printf("fplay=%d\n", i);
         preactivation[i] = weight[i] * activation[i - 1] + bias[i];
         // preactivation[i].print();
         //  preactivation[1].print();
@@ -92,7 +93,8 @@ complexnumber artificial_neural_network::back_propagation()
     temporary_del_weight.resize(layer_depth + 1);
     temporary_del_bias.resize(layer_depth + 1);
     // printf("bp\n");
-    complexnumber step(100, 0);
+    complexnumber step(10, 0);
+    complexnumber half(0.5, 0);
     for (int t = 1; t <= knowledge_set_size; t++)
     {
 
@@ -101,7 +103,7 @@ complexnumber artificial_neural_network::back_propagation()
         // preactivation[layer_depth].print();
         delta = delta + norm(del_bias[0]);
         norm(del_bias[0]).print();
-        del_bias[0] = step * norm(del_bias[0]) * del_bias[0];
+        del_bias[0] = (step * (norm(del_bias[0]))) * del_bias[0];
         del_bias[layer_depth] = matrix_pointwise_multiplication(del_bias[0], del_nonlinear_function(preactivation[layer_depth]));
         // del_bias[layer_depth].print();
         del_weight[layer_depth] = del_bias[layer_depth] * transpose(activation[layer_depth - 1]);
@@ -126,6 +128,59 @@ complexnumber artificial_neural_network::back_propagation()
         del_weight[i] = scalor * temporary_del_weight[i];
         del_bias[i] = scalor * temporary_del_bias[i];
     }
+    delta = scalor * delta;
+    // dW[3].print();
+
+    for (int i = 1; i <= layer_depth; i++)
+    {
+        weight[i] = weight[i] - del_weight[i];
+        bias[i] = bias[i] - del_bias[i];
+    }
+    return delta;
+}
+complexnumber artificial_neural_network::back_propagation_chop(long long start, long long len)
+{
+    std::vector<field_matrix<complexnumber>> temporary_del_weight, temporary_del_bias;
+    complexnumber delta;
+    temporary_del_weight.resize(layer_depth + 1);
+    temporary_del_bias.resize(layer_depth + 1);
+    // printf("bp\n");
+    complexnumber step(10, 0);
+    complexnumber half(0.5, 0);
+    for (int t = start; t <= start + len - 1; t++)
+    {
+
+        del_bias[0] = (forward_propagation(knowledge_input_set[t]) - knowledge_output_set[t]);
+        // del_bias[0].print();
+        // preactivation[layer_depth].print();
+        delta = delta + norm(del_bias[0]);
+        // norm(del_bias[0]).print();
+        del_bias[0] = (step * norm(del_bias[0])) * del_bias[0];
+        del_bias[layer_depth] = matrix_pointwise_multiplication(del_bias[0], del_nonlinear_function(preactivation[layer_depth]));
+        // del_bias[layer_depth].print();
+        del_weight[layer_depth] = del_bias[layer_depth] * transpose(activation[layer_depth - 1]);
+        for (int i = layer_depth - 1; i >= 1; i--)
+        {
+            del_bias[i] = matrix_pointwise_multiplication(transpose(weight[i + 1]) * del_bias[i + 1], del_nonlinear_function(preactivation[i]));
+            del_weight[i] = del_bias[i] * transpose(activation[i - 1]);
+            // del_bias[i].print();
+        }
+        for (int i = 1; i <= layer_depth; i++)
+        {
+            temporary_del_weight[i] = temporary_del_weight[i] + del_weight[i];
+            temporary_del_bias[i] = temporary_del_bias[i] + del_bias[i];
+            // temporary_del_weight[i].print();
+        }
+    }
+    // tdW[10].print();
+    // printf("%lld\n", knowledge_set_size);
+    complexnumber scalor(1.0 / len, 0);
+    for (int i = 1; i <= layer_depth; i++)
+    {
+        del_weight[i] = scalor * temporary_del_weight[i];
+        del_bias[i] = scalor * temporary_del_bias[i];
+    }
+    delta.print();
     delta = scalor * delta;
     // dW[3].print();
 
@@ -210,4 +265,21 @@ field_matrix<complexnumber> artificial_neural_network::del_nonlinear_function(fi
         }
     }
     return z;
+}
+void artificial_neural_network::self_realer()
+{
+    for (int ll = 1; ll <= this->layer_depth; ll++)
+    {
+        for (int i = 1; i <= this->weight[ll].r; i++)
+        {
+            for (int j = 1; j <= this->weight[ll].c; j++)
+            {
+                this->weight[ll].dt[i][j].Im = 0;
+            }
+        }
+        for (int i = 1; i <= this->bias[ll].r; i++)
+        {
+            this->bias[ll].dt[i][1].Im = 0;
+        }
+    }
 }

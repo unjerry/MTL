@@ -26,9 +26,12 @@ public:
 
     field_matrix<complexnumber> forward_propagation(field_matrix<complexnumber> x);
     complexnumber back_propagation();
+    complexnumber back_propagation_chop(long long start, long long len);
 
     field_matrix<complexnumber> nonlinear_function(field_matrix<complexnumber> x);
     field_matrix<complexnumber> del_nonlinear_function(field_matrix<complexnumber> x);
+
+    void self_realer();
 };
 
 #endif
