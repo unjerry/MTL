@@ -24,7 +24,7 @@ int artificial_neural_network::fscan_knowledge(const char *name)
 {
     int rt;
     std::string string_name(name);
-    std::string string_name_addition("annknowledge");
+    std::string string_name_addition(".annknowledge");
     FILE *f;
     f = fopen((string_name + string_name_addition).c_str(), "rb");
     rt = fscanf(f, "%lld", &knowledge_set_size);
@@ -42,7 +42,7 @@ int artificial_neural_network::fscan_brain(const char *name)
 {
     int rt;
     std::string string_name(name);
-    std::string string_name_addition("annbrainin");
+    std::string string_name_addition(".annbrainin");
     FILE *f;
     f = fopen((string_name + string_name_addition).c_str(), "rb");
     rt = fscanf(f, "%lld", &layer_depth);
@@ -59,7 +59,7 @@ int artificial_neural_network::fscan_brain(const char *name)
 void artificial_neural_network::fprint_brain(const char *name)
 {
     std::string string_name(name);
-    std::string string_name_addition("annbrainout");
+    std::string string_name_addition(".annbrainout");
     FILE *f;
     f = fopen((string_name + string_name_addition).c_str(), "wb");
     fprintf(f, "%lld\n", layer_depth);
