@@ -20,13 +20,14 @@ complexnumber::complexnumber(const long double x, const long double y, int opt)
 }
 void complexnumber::print(int opt)
 {
+    printf("testsf\n");
     switch (opt)
     {
     case 0:
-        printf("(%lf+%lfi)", this->Re, this->Im);
+        printf("(%15.6lf+%15.6lfi)", this->Re, this->Im);
         break;
     case 1:
-        printf("(%lf*e^i%lf)", this->r, this->theta);
+        printf("(%15.6lf*e^i%15.6lf)", this->r, this->theta);
         break;
     }
 }
@@ -35,10 +36,13 @@ void complexnumber::fprint(FILE *f, int opt)
     switch (opt)
     {
     case 0:
-        fprintf(f, "(%lf+%lfi)", this->Re, this->Im);
+        fprintf(f, "(%15.6lf+%15.6lfi)", this->Re, this->Im);
         break;
     case 1:
-        fprintf(f, "(%lf*e^i%lf)", this->r, this->theta);
+        fprintf(f, "(%15.6lf*e^i%15.6lf)", this->r, this->theta);
+        break;
+    case -1:
+        fwrite(this, sizeof(*this), 1, f);
         break;
     }
 }
@@ -78,6 +82,9 @@ int complexnumber::fscan(FILE *f, int opt)
         rt = fscanf(f, "(%lf*e^i%lf)", &this->r, &this->theta);
         this->Re = this->r * cos(this->theta);
         this->Im = this->r * sin(this->theta);
+        break;
+    case -1:
+        fread(this, sizeof(*this), 1, f);
         break;
     }
     return rt;
