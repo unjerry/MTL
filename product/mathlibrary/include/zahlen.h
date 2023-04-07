@@ -12,6 +12,8 @@ public:
     std::vector<char> dt;
     zahlen(size_t m = 0, size_t n = 1);
     void print(size_t opt = 0);
+    void fprint(FILE *f, size_t opt = 0);
+    int scan(size_t opt = 0);
     int fscan(FILE *f, size_t opt = 0);
     void operator=(const size_t &y);
 };

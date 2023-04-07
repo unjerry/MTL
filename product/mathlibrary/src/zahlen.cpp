@@ -54,6 +54,79 @@ void zahlen::print(size_t opt)
         }
     }
 }
+void zahlen::fprint(FILE *f, size_t opt)
+{
+    std::string tmp;
+    tmp.resize(this->dt.size());
+    if (this->dt.size() == 0)
+    {
+        printf("zahlen_warning(print):length==0\n");
+    }
+    switch (opt)
+    {
+    case 0:
+        for (int i = 0; 2 * i + 1 <= this->dt.size(); i++)
+        {
+            tmp[i] = this->dt[this->dt.size() - 1 - i] + '0';
+            tmp[this->dt.size() - 1 - i] = this->dt[i] + '0';
+        }
+        // tmp[this->dt.size()] = 0;
+        fprintf(f, "(zahlen)<%llu _%s >", this->dt.size(), tmp.c_str());
+        break;
+    case 1:
+        if (this->dt[this->dt.size() - 1] >= 5)
+        {
+            zahlen I = 1, c = ~(*this), b;
+            b = c + I;
+            for (int i = 0; 2 * i + 1 <= b.dt.size(); i++)
+            {
+                tmp[i] = b.dt[b.dt.size() - 1 - i] + '0';
+                tmp[b.dt.size() - 1 - i] = b.dt[i] + '0';
+            }
+            // tmp[b.dt.size()] = 0;
+            fprintf(f, "(zahlen)<%llu -%s >", b.dt.size(), tmp.c_str());
+            break;
+        }
+        else
+        {
+            for (int i = 0; 2 * i + 1 <= this->dt.size(); i++)
+            {
+                tmp[i] = this->dt[this->dt.size() - 1 - i] + '0';
+                tmp[this->dt.size() - 1 - i] = this->dt[i] + '0';
+            }
+            // tmp[this->dt.size()] = 0;
+            fprintf(f, "(zahlen)<%llu +%s >", this->dt.size(), tmp.c_str());
+        }
+    }
+}
+int zahlen::scan(size_t opt)
+{
+    int rt = 0, len;
+    char sw;
+    std::string tmp;
+    scanf("%*[^(]");
+    rt = scanf("(zahlen)<%llu %c", &len, &sw);
+    this->dt.resize(len);
+    tmp.resize(this->dt.size());
+    rt = scanf("%s >", tmp.c_str());
+    // printf("%s %c\n", tmp.c_str(), sw);
+
+    if (this->dt.size() == 0)
+    {
+        printf("zahlen_warning(print):length==0\n");
+    }
+    for (int i = 0; 2 * i + 1 <= this->dt.size(); i++)
+    {
+        this->dt[this->dt.size() - 1 - i] = tmp[i] - '0';
+        this->dt[i] = tmp[this->dt.size() - 1 - i] - '0';
+    }
+    if (sw == '-')
+    {
+        // zahlen e = 1;
+        *this = ~(*this) + 1;
+    }
+    return rt;
+}
 int zahlen::fscan(FILE *f, size_t opt)
 {
     int rt = 0, len;
