@@ -10,12 +10,13 @@ class zahlen
 
 public:
     std::vector<char> dt;
-    zahlen(size_t m = 0, size_t n = 1);
+    zahlen(std::string str = "0");
     void print(size_t opt = 0);
     void fprint(FILE *f, size_t opt = 0);
     int scan(size_t opt = 0);
     int fscan(FILE *f, size_t opt = 0);
     void operator=(const size_t &y);
+    // void operator=(const zahlen &y);
 };
 zahlen operator~(const zahlen &a);
 zahlen operator-(const zahlen &a);
