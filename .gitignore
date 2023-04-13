@@ -35,3 +35,5 @@
 *.annbrainout
 *.annknowledge
 *.annbrainin
+*.in
+*_tmp.cpp
