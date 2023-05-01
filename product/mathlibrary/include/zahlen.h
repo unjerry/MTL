@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <fstream>
 
 class zahlen
 {
@@ -22,5 +23,7 @@ zahlen operator~(const zahlen &a);
 zahlen operator-(const zahlen &a);
 zahlen operator+(const zahlen &a, const zahlen &b);
 zahlen operator*(const zahlen &a, const zahlen &b);
+std::ostream &operator<<(std::ostream &fo, zahlen &z);
+std::istream &operator>>(std::istream &fi, zahlen &z);
 
 #endif

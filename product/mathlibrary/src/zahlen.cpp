@@ -308,3 +308,77 @@ zahlen operator*(const zahlen &a, const zahlen &b)
     ensign(c);
     return c;
 }
+std::ostream &operator<<(std::ostream &fo, zahlen &z)
+{
+    std::string tmp, ops;
+    tmp.resize(z.dt.size());
+    ops.resize(z.dt.size() + 20);
+    if (z.dt.size() == 0)
+    {
+        printf("zahlen_warning(print):length==0\n");
+    }
+    if (z.dt[z.dt.size() - 1] >= 5)
+    {
+        zahlen I("1"), c = ~z, b;
+        b = c + I;
+        tmp.resize(b.dt.size());
+        for (int i = 0; i < b.dt.size(); i++)
+        {
+            tmp[i] = b.dt[b.dt.size() - 1 - i] + '0';
+        }
+        sprintf((char *)ops.c_str(), "(zahlen)< -%s >", tmp.c_str());
+    }
+    else
+    {
+        for (int i = 0; i < z.dt.size(); i++)
+        {
+            tmp[i] = z.dt[z.dt.size() - 1 - i] + '0';
+        }
+        sprintf((char *)ops.c_str(), "(zahlen)< +%s >", tmp.c_str());
+    }
+    fo << ops.c_str();
+    return fo;
+}
+std::istream &operator>>(std::istream &fi, zahlen &z)
+{
+    int len = 0;
+    char sw, ch = 0;
+    std::string tmp;
+    while (ch != '(')
+    {
+        fi >> ch;
+    }
+    fi >> tmp;
+    // printf("%s\n", tmp.c_str());
+    fi >> sw;
+    // printf("%c\n", sw);
+    //  fscanf((FILE *)fi.cur, "(zahlen)< %c", &sw);
+    while (1)
+    {
+        tmp.resize(len + 1);
+        ch = fi.get();
+        // rt = fscanf((FILE *)fi.cur, "%c", &ch);
+        // printf("%c\n", ch);
+        if (ch == ' ')
+        {
+            break;
+        }
+        tmp[len++] = ch;
+    }
+    // printf("%d\n", tmp.size());
+    //  printf("%c\n", sw);
+    zahlen c(tmp.c_str());
+    z = c;
+    if (z.dt.size() == 0)
+    {
+        printf("zahlen_warning(scan):length==0\n");
+    }
+    if (sw == '-')
+    {
+        zahlen I("1");
+        z = ~z + I;
+    }
+    /*
+     */
+    return fi;
+}
