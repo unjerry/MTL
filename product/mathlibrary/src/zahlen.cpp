@@ -274,6 +274,7 @@ zahlen operator+(const zahlen &a, const zahlen &b)
     anihiprechar(c);
     return c;
 }
+/*
 zahlen operator*(const zahlen &a, const zahlen &b)
 {
     if (a.dt.size() < b.dt.size())
@@ -286,13 +287,13 @@ zahlen operator*(const zahlen &a, const zahlen &b)
     bp.dt.resize(c.dt.size());
     digit_completetion(a, ap);
     digit_completetion(b, bp);
-    /*
-    printf("\n------\n");
-    c.print();
-    ap.print();
-    bp.print();
-    printf("\n------\n\n");
-    */
+
+    // printf("\n------\n");
+    // c.print();
+    // ap.print();
+    // bp.print();
+    // printf("\n------\n\n");
+
     for (int i = 0; i < c.dt.size(); i++)
     {
         for (int j = 0; j < c.dt.size() - i; j++)
@@ -303,6 +304,38 @@ zahlen operator*(const zahlen &a, const zahlen &b)
             }
             c.dt[i + j] = (c.dt[i + j] + (ap.dt[j] * bp.dt[i])) % 10;
         }
+    }
+    anihiprechar(c);
+    ensign(c);
+    return c;
+}
+*/
+zahlen operator*(const zahlen &a, const zahlen &b)
+{
+    if (a.dt.size() < b.dt.size())
+    {
+        return b * a;
+    }
+    zahlen c, ap, bp;
+    c.dt.resize(a.dt.size() + b.dt.size() - 1);
+    ap.dt.resize(c.dt.size());
+    bp.dt.resize(c.dt.size());
+    std::vector<size_t> A, B, K;
+    A.resize(c.dt.size());
+    B.resize(c.dt.size());
+    digit_completetion(a, ap);
+    digit_completetion(b, bp);
+    for (int i = 0; i < c.dt.size(); i++)
+    {
+        A[i] = ap.dt[i];
+        B[i] = bp.dt[i];
+    }
+    K = list_convolution(A, B);
+    for (int i = 0; i < c.dt.size(); i++)
+    {
+        c.dt[i] = K[i] % 10;
+        K[i + 1] += K[i] / 10;
+        // printf("%llu\n", K[i]);
     }
     anihiprechar(c);
     ensign(c);

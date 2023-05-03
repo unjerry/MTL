@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "list_convolution.h"
 
 class zahlen
 {
