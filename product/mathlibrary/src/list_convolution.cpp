@@ -43,3 +43,46 @@ std::vector<complexnumber> list_convolution(const std::vector<complexnumber> &a,
 
     return c;
 }
+std::vector<size_t> list_convolution(const std::vector<size_t> &a, const std::vector<size_t> &b)
+{
+    long long LENA = a.size();
+    long long LENB = b.size();
+    long long NN = LENA + LENB - 1;
+    long long N = exp2(ceil(log2(NN)));
+    size_t inv_N = number_theory_transform_inverse(N); // wait for another api
+
+    std::vector<size_t> ac;
+    ac.resize(N);
+    for (int i = 0; i < LENA; i++)
+    {
+        ac[i] = a[i];
+    }
+    std::vector<size_t> bc;
+    bc.resize(N);
+    for (int i = 0; i < LENB; i++)
+    {
+        bc[i] = b[i];
+    }
+
+    std::vector<size_t> A, B, C;
+    A = number_theory_transform_of_power_two(ac, 1);
+    B = number_theory_transform_of_power_two(bc, 1);
+
+    C.resize(N);
+    for (int i = 0; i < N; i++)
+    {
+        C[i] = ((A[i] * inv_N) % NUMBER_THEORY_TRANSFORM_MODULAR * B[i]) % NUMBER_THEORY_TRANSFORM_MODULAR;
+    }
+
+    std::vector<size_t> cc;
+    cc = number_theory_transform_of_power_two(C, -1);
+
+    std::vector<size_t> c;
+    c.resize(NN);
+    for (int i = 0; i < NN; i++)
+    {
+        c[i] = cc[i];
+    }
+
+    return c;
+}
